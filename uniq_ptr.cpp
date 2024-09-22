@@ -33,6 +33,7 @@ T* unique_ptr<T>::release() noexcept {
     return tmp;
 }
 
+/* be cautoius using this */
 template <typename T>
 void unique_ptr<T>::swap(unique_ptr &other) noexcept {
     T *tmp = this->ptr;
