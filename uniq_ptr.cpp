@@ -1,61 +1,63 @@
-#include <iostream>
+#include "include.hpp"
 
 template <typename T>
-class unique_ptr
-{
-private:
-    T *ptr;
+unique_ptr<T>::unique_ptr(T *locptr) noexcept
+    : ptr(locptr) {}
 
-public:
-    unique_ptr(T *locptr) noexcept
-    {
-        ptr = locptr https://github.com/Hayriyan/C-.git;
-    }
-    unique_ptr(unique_ptr &&locptr) noexcept
-    {
-        this->ptr = locptr.ptr;
-        locptr.ptr = nullptr;
-    }
-    unique_ptr& operator=(unique_ptr &&locptr)
-    {
-        delete this->ptr;
-        this->ptr = locptr.ptr;
-        locptr.ptr = nullptr;
-    }
-
-    void reset(T *ptr = nullptr)
-    {
-        delete this->ptr;
-        this->ptr = ptr;
-    }
-
-    T *release() noexcept
-    {
-        T *tmp = this->ptr;
-        this->ptr = nullptr;
-        return tmp;
-    }
-    void swap(unique_ptr &other) noexcept
-    {
-        T *tmp = this->ptr;
-        this->ptr = other.ptr;
-        other.ptr = tmp;
-    }
-    T* get(){
-        return this->ptr;
-    }
-    T& operator*() const{
-        return *this->ptr;
-    }
-    T* operator->() const noexcept{
-        return this->ptr;
-    }
-};
-
-int main(){
-
-    unique_ptr<int> a = new int;
-    *a = 5;
-    std::cout << *a << std::endl;
-    return 0;
+template <typename T>
+unique_ptr<T>::unique_ptr(unique_ptr &&locptr) noexcept
+    : ptr(locptr.ptr) {
+    locptr.ptr = nullptr;
 }
+
+template <typename T>
+unique_ptr<T>& unique_ptr<T>::operator=(unique_ptr &&locptr) noexcept {
+    if (this != &locptr) {
+        delete this->ptr;
+        this->ptr = locptr.ptr;
+        locptr.ptr = nullptr;
+    }
+    return *this;
+}
+
+template <typename T>
+void unique_ptr<T>::reset(T *ptr) {
+    delete this->ptr;
+    this->ptr = ptr;
+}
+
+template <typename T>
+T* unique_ptr<T>::release() noexcept {
+    T *tmp = this->ptr;
+    this->ptr = nullptr;
+    return tmp;
+}
+
+template <typename T>
+void unique_ptr<T>::swap(unique_ptr &other) noexcept {
+    T *tmp = this->ptr;
+    this->ptr = other.ptr;
+    other.ptr = tmp;
+}
+
+template <typename T>
+T* unique_ptr<T>::get() const {
+    return this->ptr;
+}
+
+template <typename T>
+T& unique_ptr<T>::operator*() const {
+    return *this->ptr;
+}
+
+template <typename T>
+T* unique_ptr<T>::operator->() const noexcept {
+    return this->ptr;
+}
+
+template <typename T>
+unique_ptr<T>::~unique_ptr() {
+    delete this->ptr;
+}
+
+template class unique_ptr<int>;
