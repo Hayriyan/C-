@@ -7,28 +7,28 @@ void shared_ptr<T>::ptr_delete(){
     }
 }
 template<typename T>
-shared_ptr<T>:: shared_ptr(T * locptr) noexcept : _ptr(locptr){
+shared_ptr<T>::shared_ptr(T * locptr) noexcept : _ptr(locptr){
     _control = new control_ptr{1};
 }
 template<typename T>
-shared_ptr<T>::shared_ptr(const &shared_ptr locobj )_ptr(locobj._ptr){
+shared_ptr<T>::shared_ptr(const shared_ptr& locobj ):_ptr(locobj._ptr){
     _control = &locobj._control;
-    _control->int++;
+    _control->count++;
 }
 template<typename T>
-shared_ptr<T>::shared_ptr(&&shared_ptr locobj)_ptr(locobj._ptr){
+shared_ptr<T>::shared_ptr(shared_ptr&& locobj):_ptr(locobj._ptr){
      _control = &locobj._control;
      locobj._control = nullptr;
 }
 template<typename T>
-shared_ptr<T>::shared_ptr operator=(const &shared_ptr locobj){
+shared_ptr<T> & shared_ptr<T>::operator=(const shared_ptr& locobj){
     ptr_delete();
     _ptr = locobj.ptr;
     _control = &locobj._control;
-    _control->int++;
+    _control->count++;
 }
 template<typename T>
-shared_ptr<T>::shared_ptr operator=(&&shared_ptr locobj){
+shared_ptr<T>& shared_ptr<T>::operator=(shared_ptr&& locobj){
     ptr_delete();
     _ptr = locobj.ptr;
     _control = &locobj._control;
@@ -36,22 +36,24 @@ shared_ptr<T>::shared_ptr operator=(&&shared_ptr locobj){
     locobj.ptr_delete();
 }
 
-int shared_ptr:: use_count(){
+template <typename T>
+int shared_ptr<T>::use_count() const {
     return _control->count;
 }
 
 template<typename T>
-shared_ptr<T>::T* get() const noexcept{
+T*  shared_ptr<T>::get() const noexcept{
     return _ptr;
 }
 template<typename T>
-shared_ptr<T>::T& operator*() const noexcept{
+T& shared_ptr<T>::operator*() const noexcept {
     return *_ptr;
 }
 template<typename T>
-shared_ptr<T>::T& operator->() const noexcept{
+T* shared_ptr<T>::operator->() const noexcept {
     return _ptr;
 }
-shared_ptr::~shared_ptr(){
-
+template<typename T>
+shared_ptr<T>::~shared_ptr() {
+    ptr_delete();
 }

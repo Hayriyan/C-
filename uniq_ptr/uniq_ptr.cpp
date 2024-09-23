@@ -21,7 +21,7 @@ unique_ptr<T>& unique_ptr<T>::operator=(unique_ptr &&locptr) noexcept {
 }
 
 template <typename T>
-void unique_ptr<T>::reset(T *ptr) {
+void unique_ptr<T>::reset(T *ptr = nullptr) {
     delete this->ptr;
     this->ptr = ptr;
 }
